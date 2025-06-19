@@ -1,0 +1,66 @@
+version: "1.0.0"
+
+data:
+  # List of NIfTI files to process
+  nifti_files: []
+  
+  # Optional: Specify slice range [min, max]
+  slice_range: null
+  
+  # Optional: Mean intensity threshold for slice selection
+  intensity_threshold: null
+  
+  # K-space undersampling parameters
+  acceleration_factor: 4
+  center_fraction: 0.08
+  mask_mode: "gaussian"  # Options: "gaussian", "linear", "uniform"
+  scale: 8.5
+  target_size: [64, 64]
+
+model:
+  # Quantum model parameters
+  encoding_type: "amplitude"  # Options: "amplitude", "angle"
+  use_gpu: true
+  
+  # Parallel processing configuration
+  parallel_processing:
+    enabled: false  # Whether to use parallel processing
+    num_workers: 4  # Number of parallel workers
+  
+  # Quantum noise configuration
+  noise_config:
+    gate_errors:
+      h: 0.001    # Hadamard gates
+      ry: 0.002   # Rotation-Y gates
+      rz: 0.002   # Rotation-Z gates
+      cx: 0.01    # CNOT gates
+    # Optional: Qubit-specific errors
+    qubit_errors: null
+
+training:
+  # Training parameters
+  batch_size: 32
+  num_epochs: 100
+  learning_rate: 0.001
+  
+  # Early stopping configuration
+  early_stopping:
+    patience: 10
+    delta: 0.001
+  
+  # Optimizer configuration
+  optimizer:
+    type: "adam"
+    weight_decay: 0.0001
+    gradient_clip_val: 1.0
+  
+  # Data loading parameters
+  num_workers: 4
+  pin_memory: true
+
+# Output configuration
+output:
+  save_path: "output"
+  model_name: "quantum_mri"
+  tensorboard: true
+  save_frequency: 5  # Save checkpoint every N epochs 
